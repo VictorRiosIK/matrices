@@ -1,6 +1,5 @@
 import java.io.*;
 import java.net.*;
-import java.util.concurrent.CountDownLatch;
 public class matrices{
     // Crear una matriz de 6 renglones por 5 columnas (6x5)
             static int N = 6; // Número de renglones
