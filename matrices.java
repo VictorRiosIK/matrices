@@ -3,7 +3,7 @@ import java.net.*;
 public class matrices{
             static int N = 3000; // Número de renglones
             static int M = 2000; // Número de columnas
-            static int[][] matrizResultadoC=new int[N][N];
+            static double[][] matrizResultadoC=new double[N][N];
     public static void main(String[] args) {
         if (args.length != 1) {
             System.out.println("Uso: java MatrizMultiplicacion <numero>");
@@ -21,8 +21,8 @@ public class matrices{
                  int N = 3000; // Número de renglones de la matriz
                 int M = 2000; // Número de columnas de la matriz
 
-                int[][] matrixA = new int[N][M];
-                int[][] matrixB = new int[M][N];
+                double[][] matrixA = new double[N][M];
+                double[][] matrixB = new double[M][N];
 
                 // Llenar la matrizA con valores usando la fórmula A[i][j] = 5*i - 2*j
                 for (int i = 0; i < N; i++) {
@@ -37,7 +37,7 @@ public class matrices{
                     }
                 }
                 // Transponer la matrizB
-                int[][] transposedMatrixB = new int[N][M];
+                double[][] transposedMatrixB = new double[N][M];
                 for (int i = 0; i < M; i++) {
                     for (int j = 0; j < N; j++) {
                         transposedMatrixB[j][i] = matrixB[i][j];
@@ -67,8 +67,8 @@ public class matrices{
                 System.out.println("Renglones por sumbatriz:" + renglonesPorSubmatriz);
                 
                 // Crear arreglos de submatrices para los dos grupos
-                int[][][] submatricesA_grupo1 = new int[numSubmatrices / 2][renglonesPorSubmatriz][M];
-                int[][][] submatricesA_grupo2 = new int[numSubmatrices / 2][renglonesPorSubmatriz][M];
+                double[][][] submatricesA_grupo1 = new double[numSubmatrices / 2][renglonesPorSubmatriz][M];
+                double[][][] submatricesA_grupo2 = new double[numSubmatrices / 2][renglonesPorSubmatriz][M];
                 
                 // Dividir la matrizA en submatrices y asignarlas a los grupos
                 for (int submatrizIdx = 0; submatrizIdx < numSubmatrices; submatrizIdx++) {
@@ -87,22 +87,11 @@ public class matrices{
                         }
                     }
                 }
-                /*System.out.println("IMPRIMIENDO PRIMER GRUPO");
-                for (int i = 0; i < submatricesA_grupo1.length; i++) {
-                    System.out.println("Grupo de submatriz " + i + ":");
-                    int[][] submatriz = submatricesA_grupo1[i];
-                    for (int j = 0; j < submatriz.length; j++) {
-                        for (int k = 0; k < submatriz[j].length; k++) {
-                            System.out.print(submatriz[j][k] + " ");
-                        }
-                        System.out.println();
-                    }
-                }*/
 
                 
                 try{ 
-                   threads[0] = new MatrixClient("20.84.41.105", 50001, submatricesA_grupo1,transposedMatrixB,2);
-                   threads[1] = new MatrixClient("20.84.42.77", 50001, submatricesA_grupo2,transposedMatrixB,3);
+                   threads[0] = new MatrixClient("localhost", 50001, submatricesA_grupo1,transposedMatrixB,2);
+                   threads[1] = new MatrixClient("localhost", 50002, submatricesA_grupo2,transposedMatrixB,3);
                     
                 
                     for (int i = 0; i < numThreads; i++) {
@@ -138,7 +127,7 @@ public class matrices{
                     }
                 break;
             case 3:
-               int port2 = 50001; // Puerto del servidor
+               int port2 = 50002; // Puerto del servidor
 
                     try (ServerSocket serverSocket = new ServerSocket(port2)) {
                         System.out.println("Servidor esperando conexiones en el puerto " + port2 + "...");
@@ -166,7 +155,7 @@ public class matrices{
             System.out.println();
        }*/
        // Inicializar una variable para almacenar la suma
-        int suma = 0;
+        double suma = 0;
 
         // Recorrer la matriz y sumar todos los elementos
         for (int i = 0; i < matrizResultadoC.length; i++) {
@@ -189,23 +178,13 @@ public class matrices{
              ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream())) {
 
             // Recibimos los grupos de submatrices A del cliente
-                int[][][] submatricesA_grupo = (int[][][]) in.readObject();
+                double[][][] submatricesA_grupo = (double[][][]) in.readObject();
 
                 // Recibimos la matriz B transpuesta del cliente (una sola vez)
-                int[][] transposedMatrixB = (int[][]) in.readObject();
+                double[][] transposedMatrixB = (double[][]) in.readObject();
                 int numComputadora=(int)in.readObject();
 
-                // Procesamos las submatrices A (puedes iterar sobre submatricesA_grupo)
-                for (int i = 0; i < submatricesA_grupo.length; i++) {
-                    System.out.println("Grupo de submatriz " + i + ":");
-                    int[][] submatriz = submatricesA_grupo[i];
-                    /*for (int j = 0; j < submatriz.length; j++) {
-                        for (int k = 0; k < submatriz[j].length; k++) {
-                            System.out.print(submatriz[j][k] + " ");
-                        }
-                        System.out.println();
-                    }*/
-                }
+                
                 // Mostramos la matriz B transpuesta en el servidor
                 /*System.out.println("Matriz B transpuesta recibida del cliente:");
                 for (int i = 0; i < transposedMatrixB.length; i++) {
@@ -215,13 +194,13 @@ public class matrices{
                     System.out.println();
                 }*/
                 // Crear la matriz resultado
-                int[][] resultado = new int[submatricesA_grupo.length][transposedMatrixB.length];
+                double[][] resultado = new double[submatricesA_grupo.length][transposedMatrixB.length];
                 
                 
                 // Realizar la multiplicación de las submatrices por transposedMatrixB
                 for (int i = 0; i < submatricesA_grupo.length; i++) {
                     System.out.println();
-                    int[][] submatriz = submatricesA_grupo[i];
+                    double[][] submatriz = submatricesA_grupo[i];
                     for (int j = 0; j < submatriz.length; j++) {//aqui itera 3 veces
 
                         for (int k = 0; k <= submatriz[j].length; k++) {//aqui itera 6 veces
@@ -260,11 +239,11 @@ public class matrices{
     public static class MatrixClient extends Thread {
     private String serverAddress;
     private int serverPort;
-    private int[][][] matrixA;
-    private int[][] transposedMatrixB;
+    private double[][][] matrixA;
+    private double[][] transposedMatrixB;
     private int numComputadora;
 
-    public MatrixClient(String serverAddress, int serverPort, int[][][] matrixA,int[][] transposedMatrixB, int numComputadora) {
+    public MatrixClient(String serverAddress, int serverPort, double[][][] matrixA,double[][] transposedMatrixB, int numComputadora) {
         this.serverAddress = serverAddress;
         this.serverPort = serverPort;
         this.matrixA = matrixA;
@@ -287,7 +266,7 @@ public class matrices{
 
             // Recibir la matriz resultado del servidor
             try{
-                int[][] resultMatrix = (int[][]) in.readObject();
+                double[][] resultMatrix = (double[][]) in.readObject();
                 /*System.out.println("\n\n\nMatriz resultado recibida desde el servidor para su construccion:");
                 for (int i = 0; i < resultMatrix.length; i++) {
                     for (int j = 0; j < resultMatrix[i].length; j++) {
